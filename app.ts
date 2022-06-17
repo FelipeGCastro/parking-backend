@@ -56,7 +56,6 @@ const getSpotsByPosition = async ({
 
 app.get("/spots", async (req: Request, res: Response) => {
   const { latitude, longitude } = req.query;
-  console.log("latitude", latitude, longitude);
   const spots = await getSpotsByPosition({
     latitude: latitude as unknown as number,
     longitude: longitude as unknown as number,
