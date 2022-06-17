@@ -12,15 +12,18 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^3.15.1",
+    "date-fns": "^2.28.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "geolib": "^3.3.3",
+    "node-schedule": "^2.1.0",
     "prisma": "^3.15.1",
     "ts-node": "^10.8.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.42",
+    "@types/node-schedule": "^2.1.0",
     "concurrently": "^7.2.1",
     "nodemon": "^2.0.16",
     "typescript": "^4.7.3"

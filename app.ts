@@ -2,6 +2,8 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { getBoundsOfDistance } from "geolib";
+import schedule from "node-schedule";
+import { subMinutes } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -10,6 +12,18 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
 app.use(express.json());
+
+const job = schedule.scheduleJob("*/1 * * * *", async function () {
+  const spotsRemoved = await prisma.spot.deleteMany({
+    where: {
+      AND: [
+        { status: "invalided" },
+        { updatedAt: { lte: subMinutes(new Date(), 2) } },
+      ],
+    },
+  });
+  console.log("spotsRemoved", spotsRemoved);
+});
 
 const getSpotsByPosition = async ({
   latitude,
