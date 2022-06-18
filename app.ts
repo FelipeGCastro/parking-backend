@@ -17,7 +17,7 @@ const job = schedule.scheduleJob("*/1 * * * *", async function () {
   const spotsRemoved = await prisma.spot.deleteMany({
     where: {
       AND: [
-        { status: "invalided" },
+        { status: "invalidated" },
         { updatedAt: { lte: subMinutes(new Date(), 2) } },
       ],
     },

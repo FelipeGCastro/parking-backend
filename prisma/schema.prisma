@@ -12,8 +12,8 @@ datasource db {
 
 enum Status {
   created
-  invalided
-  valided
+  invalidated
+  validated
 }
 model Spot {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
