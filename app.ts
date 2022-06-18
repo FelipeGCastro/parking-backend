@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { getBoundsOfDistance } from "geolib";
+import { PrismaClient } from "@prisma/client";
 import schedule from "node-schedule";
 import { subMinutes } from "date-fns";
 
