@@ -25,29 +25,19 @@ const job = schedule.scheduleJob("*/1 * * * *", async function () {
   console.log("spotsRemoved", spotsRemoved);
 });
 
-const getSpotsByPosition = async ({
-  latitude,
-  longitude,
-  radius = 1000,
-}: {
-  latitude: number;
-  longitude: number;
-  radius?: number;
-}) => {
-  const limits = getBoundsOfDistance(
-    {
-      latitude: latitude as unknown as number,
-      longitude: longitude as unknown as number,
-    },
-    radius
-  );
+interface IBounds {
+  northEast: { latitude: number; longitude: number };
+  southWest: { latitude: number; longitude: number };
+}
+
+const getSpotsByBounds = async ({ northEast, southWest }: IBounds) => {
   const spots = await prisma.spot.findMany({
     where: {
       AND: [
-        { latitude: { gte: limits[0].latitude } },
-        { latitude: { lte: limits[1].latitude } },
-        { longitude: { gte: limits[0].longitude } },
-        { longitude: { lte: limits[1].longitude } },
+        { latitude: { gte: southWest.latitude } },
+        { latitude: { lte: northEast.latitude } },
+        { longitude: { gte: southWest.longitude } },
+        { longitude: { lte: northEast.longitude } },
       ],
     },
   });
@@ -55,17 +45,17 @@ const getSpotsByPosition = async ({
 };
 
 app.get("/spots", async (req: Request, res: Response) => {
-  const { latitude, longitude } = req.query;
-  const spots = await getSpotsByPosition({
-    latitude: latitude as unknown as number,
-    longitude: longitude as unknown as number,
-  });
+  const { bounds } = req.query;
+
+  const spots = await getSpotsByBounds(
+    JSON.parse(bounds as string) as unknown as IBounds
+  );
   console.log("spots", spots.length);
   res.send(spots);
 });
 
 app.post("/spots", async (req: Request, res: Response) => {
-  const { latitude, longitude, position } = req.body;
+  const { latitude, longitude, bounds } = req.body;
   const result = await prisma.spot.create({
     data: {
       latitude,
@@ -73,21 +63,15 @@ app.post("/spots", async (req: Request, res: Response) => {
     },
   });
 
-  const spots = await getSpotsByPosition({
-    latitude: position.latitude,
-    longitude: position.longitude,
-  });
+  const spots = await getSpotsByBounds(bounds as unknown as IBounds);
   console.log("spots", spots.length);
   res.send(spots);
 });
 
 app.patch("/spots", async (req: Request, res: Response) => {
-  const { status, id, position } = req.body;
+  const { status, id, bounds } = req.body;
   const result = await prisma.spot.update({ where: { id }, data: { status } });
-  const spots = await getSpotsByPosition({
-    latitude: position.latitude,
-    longitude: position.longitude,
-  });
+  const spots = await getSpotsByBounds(bounds as unknown as IBounds);
 
   res.send(spots);
 });
