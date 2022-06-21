@@ -13,6 +13,7 @@ export class SpotsController {
     // console.log("spots", spots.length);
     // res.send();
 
+    console.log("spots", spots.length);
     return response.status(200).json(spots);
   }
 

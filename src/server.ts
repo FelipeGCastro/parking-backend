@@ -4,6 +4,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { removeInvalidSpots } from "./useCases/removeInvalidSpots";
 import routes from "./routes";
+import { getSpotsByBounds } from "./useCases/getSpotsByBounds";
+import { IBounds } from "./types";
 
 async function main() {
   dotenv.config();
@@ -11,10 +13,14 @@ async function main() {
   const app: Express = express();
   const httpServer = createServer(app);
   const port = process.env.PORT;
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {});
   io.on("connection", (socket) => {
-    // ...
-    console.log("connected WEBSOCKET");
+    socket.on("getSpots", async (bounds, callback) => {
+      const spots = await getSpotsByBounds(bounds as unknown as IBounds);
+      callback({
+        spots,
+      });
+    });
   });
   app.use(express.json());
 
