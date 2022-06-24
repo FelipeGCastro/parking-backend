@@ -14,11 +14,13 @@ enum Status {
   created
   invalidated
   validated
+  disabled
 }
 model Spot {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   latitude     Float    
   longitude    Float
+  isAdmin Boolean  @default(false)
   status     Status @default(created)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

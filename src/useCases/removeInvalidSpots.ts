@@ -14,13 +14,14 @@ export function removeInvalidSpots() {
       },
     });
     if (spotsToRemove.length > 0) {
-      const spotsRemoved = await prisma.spot.deleteMany({
+      const spotsRemoved = await prisma.spot.updateMany({
         where: {
           AND: [
             { status: "invalidated" },
             { updatedAt: { lte: subMinutes(new Date(), 2) } },
           ],
         },
+        data: { status: "disabled" },
       });
       io.emit("removedSpots", spotsToRemove);
     }

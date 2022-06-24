@@ -9,6 +9,7 @@ export const getSpotsByBounds = async ({ northEast, southWest }: IBounds) => {
         { latitude: { lte: northEast.latitude } },
         { longitude: { gte: southWest.longitude } },
         { longitude: { lte: northEast.longitude } },
+        { status: { not: "disabled" } },
       ],
     },
   });
