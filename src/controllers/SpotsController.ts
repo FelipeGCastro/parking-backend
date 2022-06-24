@@ -27,7 +27,7 @@ export class SpotsController {
       },
     });
     io.emit("latestSpot", spot);
-    return response.status(200);
+    return response.status(200).json({ spot });
   }
 
   async update(request: Request, response: Response): Promise<Response> {
@@ -38,6 +38,6 @@ export class SpotsController {
     });
 
     io.emit("latestSpot", spot);
-    return response.status(200);
+    return response.status(200).json({ spot });
   }
 }
