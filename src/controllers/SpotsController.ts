@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../database/prisma";
+import { io } from "../server";
 import { IBounds } from "../types";
 import { getSpotsByBounds } from "../useCases/getSpotsByBounds";
 
@@ -18,27 +19,25 @@ export class SpotsController {
   }
 
   async create(request: Request, response: Response): Promise<Response> {
-    const { latitude, longitude, bounds } = request.body;
-    const result = await prisma.spot.create({
+    const { latitude, longitude } = request.body;
+    const spot = await prisma.spot.create({
       data: {
         latitude,
         longitude,
       },
     });
-
-    const spots = await getSpotsByBounds(bounds as unknown as IBounds);
-    console.log("spots", spots.length);
-    return response.status(200).json(spots);
+    io.emit("latestSpot", spot);
+    return response.status(200);
   }
 
   async update(request: Request, response: Response): Promise<Response> {
-    const { status, id, bounds } = request.body;
-    const result = await prisma.spot.update({
+    const { status, id } = request.body;
+    const spot = await prisma.spot.update({
       where: { id },
       data: { status },
     });
-    const spots = await getSpotsByBounds(bounds as unknown as IBounds);
 
-    return response.status(200).json(spots);
+    io.emit("latestSpot", spot);
+    return response.status(200);
   }
 }
