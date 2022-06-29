@@ -6,6 +6,7 @@ import { removeInvalidSpots } from "./useCases/removeInvalidSpots";
 import routes from "./routes";
 import { IBounds } from "./types";
 import { getSpotsByBounds } from "./useCases/getSpotsByBounds";
+import { AuthenticateMiddleware } from "./middlewares/AuthenticateMiddleware";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ io.on("connection", (socket) => {
 removeInvalidSpots();
 
 app.use(express.json());
-
+app.use(AuthenticateMiddleware().handle);
 app.use(routes);
 
 app.use(

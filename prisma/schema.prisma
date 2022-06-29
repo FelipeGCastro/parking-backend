@@ -22,11 +22,19 @@ model Spot {
   longitude    Float
   isAdmin Boolean  @default(false)
   status     Status @default(created)
+  author   User?      @relation(fields: [authorId], references: [id])
+  authorId String?    @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model User {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  phoneIp String  @unique
+  email String @unique
+  name String
+  avatarUrl String
+  spots Spot[]
+  isAdmin Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

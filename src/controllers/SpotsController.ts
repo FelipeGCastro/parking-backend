@@ -20,12 +20,19 @@ export class SpotsController {
 
   async create(request: Request, response: Response): Promise<Response> {
     const { latitude, longitude } = request.body;
+    // @ts-ignore
+    const userId = request.userId ? request.userId : null;
+    const userData = await prisma.user.findFirst({ where: { id: userId } });
+    const userIsAdmin = userData?.isAdmin;
     const spot = await prisma.spot.create({
       data: {
         latitude,
         longitude,
+        isAdmin: !!userIsAdmin,
+        authorId: userId,
       },
     });
+
     io.emit("latestSpot", spot);
     return response.status(200).json({ spot });
   }
