@@ -26,6 +26,12 @@ io.on("connection", (socket) => {
       spots,
     });
   });
+  socket.on("collaboratorLocation", async (location, userId) => {
+    socket.broadcast.emit('collaboratorsLocation', location, userId)
+  });
+  socket.on("removeCollaborator", async (userId) => {
+    socket.broadcast.emit('removeCollaborator', userId)
+  });
 });
 
 removeInvalidSpots();

@@ -12,7 +12,9 @@ export const UserService = () => {
     const checkUser = await prisma.user.findFirst({
       where: { email },
     });
+    
     if (checkUser) {
+      console.log('user exist')
       return checkUser;
     }
 
