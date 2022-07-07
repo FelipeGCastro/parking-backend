@@ -43,9 +43,16 @@ export class SpotsController {
 
   async update(request: Request, response: Response): Promise<Response> {
     const { status, id } = request.body;
+    // @ts-ignore
+    const userId = request.userId;
+    let userIsAdmin = false;
+    if (userId) {
+      const userData = await prisma.user.findFirst({ where: { id: userId } });
+      userIsAdmin = !!userData?.isAdmin;
+    }
     const spot = await prisma.spot.update({
       where: { id },
-      data: { status },
+      data: { status, isAdmin: userIsAdmin },
     });
 
     io.emit("latestSpot", spot);
