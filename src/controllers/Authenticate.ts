@@ -3,6 +3,7 @@ import { AuthenticateUserService } from "../services/AuthenticateUserService";
 export class AuthenticateController {
   public async handle(request: Request, response: Response): Promise<Response> {
     const { token } = request.body;
+
     try {
       const { jwtoken, user } = await AuthenticateUserService().execute(token);
 

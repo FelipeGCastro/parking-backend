@@ -36,7 +36,6 @@ export class SpotsController {
         authorId: userId,
       },
     });
-
     io.emit("latestSpot", spot);
     return response.status(200).json({ spot });
   }
@@ -54,7 +53,6 @@ export class SpotsController {
       where: { id },
       data: { status, isAdmin: userIsAdmin },
     });
-
     io.emit("latestSpot", spot);
     return response.status(200).json({ spot });
   }

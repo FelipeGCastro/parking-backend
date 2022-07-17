@@ -27,16 +27,29 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("collaboratorLocation", async (location, userId) => {
-    socket.broadcast.emit('collaboratorsLocation', location, userId)
+    socket.broadcast.emit("collaboratorsLocation", location, userId);
   });
   socket.on("removeCollaborator", async (userId) => {
-    socket.broadcast.emit('removeCollaborator', userId)
+    socket.broadcast.emit("removeCollaborator", userId);
   });
 });
 
 removeInvalidSpots();
 
-app.use(express.json());
+app.use(
+  (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): void => {
+    if (req.originalUrl === "/webhooks") {
+      next();
+    } else {
+      express.json()(req, res, next);
+    }
+  }
+);
+
 app.use(AuthenticateMiddleware().handle);
 app.use(routes);
 
